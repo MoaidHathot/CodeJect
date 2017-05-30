@@ -1,14 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace CodeJect
 {
-    public sealed class CodeJectBuilder
+    public sealed class CodeJectBuilder : IContainerBuilder
     {
-        public IRegistrationContext Register(Type type)
+        private readonly Dictionary<Type, IList<IRegistrationContext>> _registrations = new Dictionary<Type, IList<IRegistrationContext>>();
+
+        public IRegistrationContext Register(Type type) 
+            => AddContext(type);
+
+        public IInstanceResolver Build() 
+            => new CodeJectResolver(_registrations.Select(pair => (pair.Key, pair.Value.AsEnumerable())));
+
+        private IRegistrationContext AddContext(Type type)
         {
-            return new RegistrationContext(type).As<string>();
+            var context = new RegistrationContext(type);
+
+            if (!_registrations.ContainsKey(type))
+            {
+                _registrations[type] = new List<IRegistrationContext>();
+            }
+
+            _registrations[type].Add(context);
+
+            return context;
         }
     }
 }

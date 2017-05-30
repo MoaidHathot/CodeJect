@@ -6,6 +6,8 @@ namespace CodeJect
 {
     public interface IContainerBuilder
     {
-        IRegistrationContext Register<TType>();
+        IRegistrationContext Register(Type type);
+
+        IInstanceResolver Build();
     }
 }

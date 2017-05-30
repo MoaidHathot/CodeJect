@@ -2,10 +2,22 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard1.6</TargetFramework>
+    <Authors>Moaid Hathot</Authors>
+    <Company>Moaid Hathot</Company>
+    <Description>A simple, fast and small DI Container that uses Code Generation techniques for optimum performance.</Description>
+    <RepositoryUrl>https://github.com/MoaidHathot/CodeJect</RepositoryUrl>
+    <RepositoryType>Github</RepositoryType>
+    <PackageTags>DI; DI Contaier; IOC; IOC Container; Code Generation; CodeGeneration; ExpressionTree</PackageTags>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Copyright>Moaid Hathot</Copyright>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="CodeJect.csproj.DotSettings" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
   </ItemGroup>
 
 </Project>

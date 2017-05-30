@@ -9,6 +9,7 @@ namespace CodeJect
         public static T With<T>(this T @this, Action sideEffect)
         {
             sideEffect();
+
             return @this;
         }
     } 

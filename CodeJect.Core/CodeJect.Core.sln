@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJect.Core", "CodeJect.Core\CodeJect.Core.csproj", "{C671763A-5E01-4F88-AFC4-F6619C980A38}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJect", "CodeJect\CodeJect.csproj", "{3CDCFBBD-CE82-47C6-8109-81DDC56F13A7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodeJect.Test", "CodeJect.Test\CodeJect.Test.csproj", "{CCC4086B-2B62-4018-A145-23508B097465}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,14 +13,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C671763A-5E01-4F88-AFC4-F6619C980A38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C671763A-5E01-4F88-AFC4-F6619C980A38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C671763A-5E01-4F88-AFC4-F6619C980A38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C671763A-5E01-4F88-AFC4-F6619C980A38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CDCFBBD-CE82-47C6-8109-81DDC56F13A7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3CDCFBBD-CE82-47C6-8109-81DDC56F13A7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3CDCFBBD-CE82-47C6-8109-81DDC56F13A7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CDCFBBD-CE82-47C6-8109-81DDC56F13A7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CCC4086B-2B62-4018-A145-23508B097465}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CCC4086B-2B62-4018-A145-23508B097465}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CCC4086B-2B62-4018-A145-23508B097465}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CCC4086B-2B62-4018-A145-23508B097465}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

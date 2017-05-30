@@ -9,7 +9,7 @@ namespace CodeJect
         private readonly ISet<Type> _dependencyTypes = new HashSet<Type>();
 
         public Type RegisteredType { get; }
-        public IInstanceScope InstanceScope { get; private set; }
+        public IInstanceScope InstanceScope { get; private set; } = new InstancePerDependencyScope();
         
 
         internal RegistrationContext(Type registeredType)

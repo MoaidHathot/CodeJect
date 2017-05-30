@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace CodeJect.Interfaces
+namespace CodeJect
 {
-    public interface ICodeJectResolver
+    public interface IInstanceResolver
     {
         object Resolver(Type type);
     }
