@@ -10,7 +10,6 @@ namespace CodeJect.Test.CodeGenration
     public class ExpressionTreeTests
     {
         [Theory]
-        [InlineData(typeof(string))]
         [InlineData(typeof(int))]
         [InlineData(typeof(ulong))]
         [InlineData(typeof(StringBuilder))]

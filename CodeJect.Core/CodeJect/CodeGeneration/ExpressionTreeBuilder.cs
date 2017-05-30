@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
-
+using System.Threading;
 namespace CodeJect.CodeGeneration
 {
     internal class ExpressionTreeBuilder
@@ -27,9 +28,12 @@ namespace CodeJect.CodeGeneration
 
         public Func<object> Build()
         {
-            Expression<Func<object>> expression = () => Activator.CreateInstance(_resolvedType);
+            var constructor = Expression.New(_resolvedType);
+            var constructorInvoker = Expression.MemberInit(constructor);
+            var casting = Expression.Convert(constructorInvoker, typeof(object));
+            Debug.WriteLine(constructorInvoker);
 
-            return expression.Compile();
+            return Expression.Lambda<Func<dynamic>>(casting).Compile();
         }
     }
 }
