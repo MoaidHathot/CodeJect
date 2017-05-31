@@ -27,7 +27,6 @@ namespace CodeJect.CodeGeneration
                 parameters.ForeEach(_parameters.Add);
             });
 
-
         public Func<object> Build()
         {
             NewExpression constructor = null == _constructor

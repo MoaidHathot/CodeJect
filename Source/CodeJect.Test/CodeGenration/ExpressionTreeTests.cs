@@ -33,32 +33,34 @@ namespace CodeJect.Test.CodeGenration
         }
 
         [Theory]
-        [InlineData(typeof(TypeWithConstructorAcceptingInt), 1)]
-        [InlineData(typeof(TypeWithConstructorAcceptingInt), 42)]
-        [InlineData(typeof(TypeWithConstructorAcceptingInt), -10)]
-        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 1.0)]
-        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 10.3)]
-        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 66D)]
-        [InlineData(typeof(TypeWithConstructorAcceptingString), "")]
+        [InlineData(typeof(TypeWithConstructorAcceptingInt), 1, typeof(int))]
+        [InlineData(typeof(TypeWithConstructorAcceptingInt), 42, typeof(int))]
+        [InlineData(typeof(TypeWithConstructorAcceptingInt), -10, typeof(int))]
+        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 1.0, typeof(double))]
+        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 10.3, typeof(double))]
+        [InlineData(typeof(TypeWithConstructorAcceptingDobule), 66D, typeof(double))]
+        [InlineData(typeof(TypeWithConstructorAcceptingString), "", typeof(string))]
+        [InlineData(typeof(TypeWithConstructorAcceptingString), "CodeJect", typeof(string))]
+        [InlineData(typeof(TypeWithConstructorAcceptingString), "Code Ject", typeof(string))]
+        [InlineData(typeof(TypeWithConstructorAcceptingString), null, typeof(string))]
 
-        public void Compile_TypeWithConstructorAcceptingConstantParameter_ObjectGenerated(Type type, object parameter)
+        public void Compile_TypeWithConstructorAcceptingConstantParameter_ObjectGenerated(Type type, object parameter, Type parameterType)
         {
             var builder = new ExpressionTreeBuilder(type);
 
-            builder.WithConstructor(type.GetConstructors().First(ctr => ctr.GetParameters().Length == 1), Expression.Constant(parameter));
-            var factory = builder.Build();
+            builder.WithConstructor(type.GetConstructors().First(ctr => ctr.GetParameters().Length == 1), Expression.Constant(parameter, parameterType));
+            var factory = builder.Build(); 
 
             var created = factory();
 
             Assert.NotNull(created);
             Assert.IsType(type, created);
+            Assert.Equal(type.GetProperty("Value").GetValue(created), parameter);
         }
 
         [Theory]
         [InlineData(typeof(TypeWithConstructorAcceptingString), "")]
-        [InlineData(typeof(TypeWithConstructorAcceptingString), "CodeJect")]
-        [InlineData(typeof(TypeWithConstructorAcceptingString), "Code Ject")]
-        [InlineData(typeof(TypeWithConstructorAcceptingString), null)]
+
         public void Compile_TwypWithConstructorAcceptingStringParameter_ObjectGenerated(Type type, string parameter)
         {
             var builder = new ExpressionTreeBuilder(type);
