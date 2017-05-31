@@ -11,24 +11,30 @@ namespace CodeJect.CodeGeneration
     internal class ExpressionTreeBuilder
     {
         private readonly Type _resolvedType;
-
-        private const BindingFlags ConstructorBindingFlags =
-            BindingFlags.CreateInstance | BindingFlags.Public | BindingFlags.Instance;
+        private ConstructorInfo _constructor;
+        private readonly IList<Expression> _parameters = new List<Expression>();
 
         public ExpressionTreeBuilder(Type resolvedType)
         {
+
             _resolvedType = resolvedType;
         }
 
+        public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Expression[] parameters) 
+            => this.With(() =>
+            {
+                _constructor = constructor;
+                parameters.ForeEach(_parameters.Add);
+            });
 
-        public ExpressionTreeBuilder WithDependency(Type dependencyType, Func<object> dependencyFactory)
-        {
-            return this;
-        }
 
         public Func<object> Build()
         {
-            var constructor = Expression.New(_resolvedType);
+            NewExpression constructor = null == _constructor
+                ? Expression.New(_resolvedType)
+                : Expression.New(_constructor, _parameters);
+
+           
             var constructorInvoker = Expression.MemberInit(constructor);
             var casting = Expression.Convert(constructorInvoker, typeof(object));
             Debug.WriteLine(constructorInvoker);
