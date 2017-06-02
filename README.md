@@ -3,10 +3,13 @@ CodeJect is a small, fast and simple DI Container. It uses Code Generation techn
 
 CodeJect is an educational project.
   
-it is currently in development stage. 
-Todo:
+## Todo:
 1. Refactor the builder class to extract logic like finding constructors.
 2. Support SingleInstance.
 3. Support DependencyPerThread.
-4. Support DependencyPerLifeTimeScope.
-5. More Unit Tests.
+4. Register Instance.
+5. Custom Action registration.
+7. Dispose created IDisposable objects when the container is disposed.
+8. Support DependencyPerLifeTimeScope.
+9. More Unit Tests.
+10. Add options to select a constructor.
