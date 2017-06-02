@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
 using CodeJect.CodeGeneration;
@@ -8,7 +9,7 @@ using CodeJect.Exceptions;
 
 namespace CodeJect
 {
-    public sealed class CodeJectBuilder : IContainerBuilder
+    public sealed class CodeJectBuilder : ICodeJectBuilder
     {
         private readonly Dictionary<Type, IList<IRegistrationContext>> _registrations = new Dictionary<Type, IList<IRegistrationContext>>();
 
@@ -36,7 +37,7 @@ namespace CodeJect
                 var context = pair.Value.Last();
 
                 var selectedConstructor = typeInfo
-                    .GetConstructors(BindingFlags.Public)
+                    .GetConstructors().Where(ctor => ctor.IsPublic)
                     .Where(ctor => ctor.GetParameters().None() ||
                             ctor.GetParameters().All(param => allExposedTypes.Contains(param.ParameterType)))
                     .OrderByDescending(ctor => ctor.GetParameters().Length)
@@ -46,16 +47,16 @@ namespace CodeJect
             }
             //return new CodeJectResolver(_registrations.Select(pair => (pair.Key, pair.Value.AsEnumerable())));
 
-            selectedConstructors.ForeEach(pair => GenerateObjectFactor(pair.Key, selectedConstructors, typeMap));
+            return new CodeJectResolver(typeMap.ToDictionary(pair => pair.Key,
+                pair => (Func<object>)(() => GenerateObjectFactor(pair.Value, selectedConstructors, typeMap)())));
         }
 
         private Func<object> GenerateObjectFactor(Type type, Dictionary<Type, ConstructorInfo> constructorMap, Dictionary<Type, Type> typeMap)
         {
             var constructor = constructorMap[type];
-            return
-                new ExpressionTreeBuilder(type).WithConstructor(constructor,
+            return new ExpressionTreeBuilder(type).WithConstructor(constructor,
                     constructor.GetParameters()
-                        .Select(parm => GenerateObjectFactor(parm.ParameterType, constructorMap, typeMap))
+                        .Select(parm => GenerateObjectFactor(typeMap[parm.ParameterType], constructorMap, typeMap))
                         .ToArray()).Build();
         }
 

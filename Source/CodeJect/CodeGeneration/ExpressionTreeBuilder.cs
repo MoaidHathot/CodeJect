@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 namespace CodeJect.CodeGeneration
@@ -30,7 +29,11 @@ namespace CodeJect.CodeGeneration
 
         public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Func<object>[] parameters)
         {
-            return this.WithConstructor(constructor, parameters.Select(param => ))
+            return this.WithConstructor(constructor, parameters.Select(param =>
+            {
+                var obj = param();
+                return (Expression)Expression.Constant(obj, obj?.GetType());
+            }).ToArray());
         }
 
         public Func<object> Build()
@@ -42,7 +45,6 @@ namespace CodeJect.CodeGeneration
            
             var constructorInvoker = Expression.MemberInit(constructor);
             var casting = Expression.Convert(constructorInvoker, typeof(object));
-            Debug.WriteLine(constructorInvoker);
 
             return Expression.Lambda<Func<dynamic>>(casting).Compile();
         }

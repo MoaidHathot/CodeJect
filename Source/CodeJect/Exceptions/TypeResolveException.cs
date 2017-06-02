@@ -8,7 +8,7 @@ namespace CodeJect.Exceptions
     {
  
         public TypeResolveException(Type type, string name = "")
-            : base($"Can't resolve an instance of type '{type.FullName}' {(string.IsNullOrWhiteSpace(name) ? $"nameed '{name}'" : string.Empty)}")
+            : base($"Can't resolve an instance of type '{type.FullName}' {(string.IsNullOrWhiteSpace(name) ? $"named '{name}'" : string.Empty)}")
         {
         }
     }
