@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace CodeJect
@@ -8,6 +10,7 @@ namespace CodeJect
     {
         private readonly ISet<Type> _dependencyTypes = new HashSet<Type>();
 
+        public IEnumerable<Type> ExposedTypes => _dependencyTypes.Any() ? _dependencyTypes : Enumerable.Repeat(RegisteredType, 1);
         public Type RegisteredType { get; }
         public IInstanceScope InstanceScope { get; private set; } = new InstancePerDependencyScope();
         

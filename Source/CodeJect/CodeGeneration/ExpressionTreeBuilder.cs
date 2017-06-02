@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Security.Cryptography.X509Certificates;
@@ -20,12 +21,17 @@ namespace CodeJect.CodeGeneration
             _resolvedType = resolvedType;
         }
 
-        public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Expression[] parameters) 
+        public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Expression[] parameters)
             => this.With(() =>
             {
                 _constructor = constructor;
                 parameters.ForeEach(_parameters.Add);
             });
+
+        public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Func<object>[] parameters)
+        {
+            return this.WithConstructor(constructor, parameters.Select(param => ))
+        }
 
         public Func<object> Build()
         {
