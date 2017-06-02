@@ -3,7 +3,7 @@ _CodeJect_ is a small, fast and simple DI Container. It uses Code Generation tec
 
 It is built in .Net Core targeting .Net Standard 1.6
 
-_CodeJect_ is an **educational** project. The project is not intended to be used in production.
+_CodeJect_ is an **educational** project. The project is **not** intended to be used in production.
   
 ## Already Implemented:
 1. Fluent API (Inspired from AutoFac).
