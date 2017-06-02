@@ -8,7 +8,7 @@ _CodeJect_ is an **educational** project. The project is **not** intended to be 
 ## Already Implemented:
 1. Fluent API (Inspired by AutoFac's).
 2. Generics API implemented as extension methods.
-3. Resolving types and dependencies recursively.
+3. Resolving types and dependencies recursively (constructor injected).
 
 ## Todo:
 1. Refactor the builder class to extract logic like finding constructors.
