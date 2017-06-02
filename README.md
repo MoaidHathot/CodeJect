@@ -6,7 +6,7 @@ It is built in .Net Core targeting .Net Standard 1.6
 _CodeJect_ is an **educational** project. The project is **not** intended to be used in production.
   
 ## Already Implemented:
-1. Fluent API (Inspired from AutoFac).
+1. Fluent API (Inspired by AutoFac's).
 2. Generics API implemented as extension methods.
 3. Resolving types and dependencies recursively.
 
