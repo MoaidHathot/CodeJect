@@ -1,8 +1,15 @@
 # CodeJect
-CodeJect is a small, fast and simple DI Container. It uses Code Generation technique via Expression-trees (rather than reflection) for producing the dependencies
+_CodeJect_ is a small, fast and simple DI Container. It uses Code Generation technique via Expression-trees (rather than reflection) for producing the dependencies
+
+It is built in .Net Core targeting .Net Standard 1.6
 
 _CodeJect_ is an **educational** project. The project is not intended to be used in production.
   
+## Already Implemented:
+1. Fluent API (Inspired from AutoFac).
+2. Generics API implemented as extension methods.
+3. Resolving types and dependencies recursively.
+
 ## Todo:
 1. Refactor the builder class to extract logic like finding constructors.
 2. Support SingleInstance.
