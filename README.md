@@ -9,7 +9,9 @@ _CodeJect_ is an **educational** project. The project is not intended to be used
 3. Support DependencyPerThread.
 4. Register Instance.
 5. Custom Action registration.
-7. Dispose created IDisposable objects when the container is disposed.
-8. Support DependencyPerLifeTimeScope.
-9. More Unit Tests.
-10. Add options to select a constructor.
+6. Dispose created IDisposable objects when the container is disposed.
+7. Support DependencyPerLifeTimeScope.
+8. More Unit Tests.
+9. Add options to select a constructor.
+10. Perform performance comparisons between this and Reflection based algorithm.
+11. Perform performance comparisons between this and other DI containers.
