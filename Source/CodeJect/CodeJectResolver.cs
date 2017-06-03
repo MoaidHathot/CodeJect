@@ -6,7 +6,7 @@ using CodeJect.Exceptions;
 
 namespace CodeJect
 {
-    internal class CodeJectResolver : IInstanceResolver
+    internal class CodeJectResolver : ITypeResolver
     {
         private readonly IDictionary<Type, Func<object>> _registrations;
 

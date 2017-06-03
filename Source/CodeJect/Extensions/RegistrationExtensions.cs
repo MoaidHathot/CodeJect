@@ -15,7 +15,7 @@ namespace CodeJect
 
         public static IRegistrationContext AsImplementedInterfaces(this IRegistrationContext context)
         {
-            context.RegisteredType.GetTypeInfo().GetInterfaces().ForeEach(type => context.As(type));
+            context.RegisteredType.GetTypeInfo().GetInterfaces().ForEach(type => context.As(type));
             return context;
         }
     }

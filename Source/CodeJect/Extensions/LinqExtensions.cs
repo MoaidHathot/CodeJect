@@ -17,7 +17,7 @@ namespace CodeJect
             }
         }
 
-        public static void ForeEach<T>(this IEnumerable<T> source, Action<T> action)
+        public static void ForEach<T>(this IEnumerable<T> source, Action<T> action)
         {
             foreach (var item in source)
             {
@@ -36,5 +36,18 @@ namespace CodeJect
 
         public static ISet<T> ToHashSet<T>(this IEnumerable<T> source)
             => source.ToHashSet(t => t);
+
+        public static IEnumerable<T> If<T>(this IEnumerable<T> source, Func<T, bool> predicate, Action<T> action)
+        {
+            foreach (var item in source)
+            {
+                if (predicate(item))
+                {
+                    action(item);
+                }
+
+                yield return item;
+            }
+        }
     }
 }

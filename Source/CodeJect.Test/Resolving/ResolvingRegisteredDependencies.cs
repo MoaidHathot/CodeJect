@@ -89,5 +89,4 @@ namespace CodeJect.Test.Resolving
             Assert.IsType<TypeImplementingInterface2>(resolved.TypeDepensOnTwoTypesImplementingInterface1And2.TestingInterface2);
         }
     }
-
 }

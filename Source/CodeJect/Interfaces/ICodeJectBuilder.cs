@@ -7,6 +7,6 @@ namespace CodeJect
     public interface ICodeJectBuilder
     {
         IRegistrationContext Register(Type registeredType);
-        IInstanceResolver Build();
+        ITypeResolver Build();
     }
 }

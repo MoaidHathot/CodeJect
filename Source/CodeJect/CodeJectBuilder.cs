@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Text;
+using System.Threading;
 using CodeJect.CodeGeneration;
 using CodeJect.Exceptions;
 
@@ -16,39 +17,52 @@ namespace CodeJect
         public IRegistrationContext Register(Type type) 
             => AddContext(type);
 
-        public IInstanceResolver Build()
+        public ITypeResolver Build()
         {
-            var allExposedTypes = _registrations.SelectMany(pair => pair.Value).SelectMany(c => c.ExposedTypes).ToHashSet();
+            var allImplementedTypes = _registrations.SelectMany(pair => pair.Value).SelectMany(c => c.ExposedTypes).ToHashSet();
             var selectedConstructors = new Dictionary<Type, ConstructorInfo>();
-            var typeMap = new Dictionary<Type, Type>();
+            var implementedToConcreteTypeMap = new Dictionary<Type, Type>();
 
-            _registrations.ForeEach(pair => pair.Value.SelectMany(c => c.ExposedTypes).ForeEach(c => typeMap[c] = pair.Key));
+            _registrations.ForEach(pair => LinqExtensions.ForEach(pair.Value.SelectMany(c => c.ExposedTypes), c => implementedToConcreteTypeMap[c] = pair.Key));
 
+            _registrations
+                .Select(pair => (pair: pair, Type: pair.Key, TypeInfo: pair.Key.GetTypeInfo(), contexts: pair.Value))
+                .If(item => !IsConcreteType(item.TypeInfo), item => throw new TypeRegistrationException(item.Type))
+                .Select(item => 
+                    (item: item, ConstructorInfo: item.TypeInfo.GetConstructors()
+                        .Where(ctr => IsConstructorQualified(ctr, allImplementedTypes))
+                        .OrderByDescending(ctor => ctor.GetParameters().Length)
+                        .FirstOrDefault()))
+                .ForEach(item => selectedConstructors[item.item.Type] = item.ConstructorInfo ??
+                    throw new CodeJectException($"Can't resolve dependencies for {item.item.Type.FullName}."));
+                
+            
+            
+            //foreach (var pair in _registrations)
+            //{
+            //    var typeInfo = pair.Key.GetTypeInfo();
 
-            foreach (var pair in _registrations)
-            {
-                var typeInfo = pair.Key.GetTypeInfo();
+            //    if (typeInfo.IsInterface || typeInfo.IsAbstract)
+            //    {
+            //        throw new TypeRegistrationException(pair.Key);
+            //    }
 
-                if (typeInfo.IsInterface || typeInfo.IsAbstract)
-                {
-                    throw new TypeRegistrationException(pair.Key);
-                }
+            //    //var context = pair.Value.Last();
 
-                var context = pair.Value.Last();
+            //    var selectedConstructor = typeInfo
+            //        .GetConstructors()
+            //        .Where(ctor => ctor.IsPublic)
+            //        .Where(ctor => ctor.GetParameters().None() ||
+            //                ctor.GetParameters().All(param => allImplementedTypes.Contains(param.ParameterType)))
+            //        .OrderByDescending(ctor => ctor.GetParameters().Length)
+            //        .FirstOrDefault();
 
-                var selectedConstructor = typeInfo
-                    .GetConstructors().Where(ctor => ctor.IsPublic)
-                    .Where(ctor => ctor.GetParameters().None() ||
-                            ctor.GetParameters().All(param => allExposedTypes.Contains(param.ParameterType)))
-                    .OrderByDescending(ctor => ctor.GetParameters().Length)
-                    .FirstOrDefault();
-
-                selectedConstructors[pair.Key] = selectedConstructor ?? throw new CodeJectException($"Can't resolve dependencies for {pair.Key.FullName}.");
-            }
+            //    selectedConstructors[pair.Key] = selectedConstructor ?? throw new CodeJectException($"Can't resolve dependencies for {pair.Key.FullName}.");
+            //}
             //return new CodeJectResolver(_registrations.Select(pair => (pair.Key, pair.Value.AsEnumerable())));
 
-            return new CodeJectResolver(typeMap.ToDictionary(pair => pair.Key,
-                pair => (Func<object>)(() => GenerateObjectFactor(pair.Value, selectedConstructors, typeMap)())));
+            return new CodeJectResolver(implementedToConcreteTypeMap.ToDictionary(pair => pair.Key,
+                pair => (Func<object>)(() => GenerateObjectFactor(pair.Value, selectedConstructors, implementedToConcreteTypeMap)())));
         }
 
         private Func<object> GenerateObjectFactor(Type type, Dictionary<Type, ConstructorInfo> constructorMap, Dictionary<Type, Type> typeMap)
@@ -73,5 +87,13 @@ namespace CodeJect
 
             return context;
         }
+
+        private bool IsConstructorQualified(ConstructorInfo constructor, ISet<Type> implementedTypes)
+            => constructor.IsPublic &&
+                (constructor.GetParameters().None() ||
+                 constructor.GetParameters().All(parameter => implementedTypes.Contains(parameter.ParameterType)));
+
+        private bool IsConcreteType(TypeInfo typeInfo)
+            => !typeInfo.IsInterface && !typeInfo.IsAbstract;
     }
 }

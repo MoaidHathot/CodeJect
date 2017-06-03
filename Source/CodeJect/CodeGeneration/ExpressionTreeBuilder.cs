@@ -24,12 +24,12 @@ namespace CodeJect.CodeGeneration
             => this.With(() =>
             {
                 _constructor = constructor;
-                parameters.ForeEach(_parameters.Add);
+                parameters.ForEach(_parameters.Add);
             });
 
         public ExpressionTreeBuilder WithConstructor(ConstructorInfo constructor, params Func<object>[] parameters)
         {
-            return this.WithConstructor(constructor, parameters.Select(param =>
+            return WithConstructor(constructor, parameters.Select(param =>
             {
                 var obj = param();
                 return (Expression)Expression.Constant(obj, obj?.GetType());

@@ -6,5 +6,9 @@ namespace CodeJect
 {
     public class InstancePerThreadScope : IInstanceScope
     {
+        public object Resolve()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeJect
 {
-    public interface IInstanceResolver
+    public interface ITypeResolver
     {
         object Resolver(Type type);
     }
