@@ -4,7 +4,7 @@ using System.Text;
 
 namespace CodeJect
 {
-    public interface ICodeJectBuilder
+    public interface ICodeJectBuilder : IDisposable
     {
         IRegistrationContext Register(Type registeredType);
         ITypeResolver Build();

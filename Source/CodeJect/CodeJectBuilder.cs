@@ -95,5 +95,10 @@ namespace CodeJect
 
         private bool IsConcreteType(TypeInfo typeInfo)
             => !typeInfo.IsInterface && !typeInfo.IsAbstract;
+
+        public void Dispose()
+        {
+            _registrations?.Clear();
+        }
     }
 }

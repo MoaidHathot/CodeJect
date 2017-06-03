@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using CodeJect.Exceptions;
@@ -23,6 +24,14 @@ namespace CodeJect
             }
 
             return _registrations[type]();
+        }
+
+        public void Dispose()
+        {
+           _registrations?
+                .Select(pair => pair.Value())
+                .Where(item => item is IDisposable)
+                .ForEach(item => ((IDisposable)item).Dispose());
         }
     }
 }
