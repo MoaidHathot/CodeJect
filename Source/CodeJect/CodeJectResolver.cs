@@ -10,6 +10,7 @@ namespace CodeJect
     internal class CodeJectResolver : ITypeResolver
     {
         private readonly IDictionary<Type, Func<object>> _registrations;
+        private LinkedList<object> _createdObjects = new LinkedList<object>();
 
         public CodeJectResolver(IDictionary<Type, Func<object>> registrations)
         {
@@ -23,15 +24,14 @@ namespace CodeJect
                 throw new TypeResolveException(type);
             }
 
-            return _registrations[type]();
+            return _createdObjects.AddLast(_registrations[type]()).Value;
         }
 
         public void Dispose()
         {
-           _registrations?
-                .Select(pair => pair.Value())
-                .Where(item => item is IDisposable)
-                .ForEach(item => ((IDisposable)item).Dispose());
+           _createdObjects?
+                .Select(item => item as IDisposable)
+                .ForEach(item => item?.Dispose());
         }
     }
 }

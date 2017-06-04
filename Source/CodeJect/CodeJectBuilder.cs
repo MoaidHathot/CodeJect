@@ -19,25 +19,22 @@ namespace CodeJect
 
         public ITypeResolver Build()
         {
-            var allImplementedTypes = _registrations.SelectMany(pair => pair.Value).SelectMany(c => c.ExposedTypes).ToHashSet();
+            var registeredInterfaces = _registrations.SelectMany(pair => pair.Value).SelectMany(c => c.ExposedTypes).ToHashSet();
             var selectedConstructors = new Dictionary<Type, ConstructorInfo>();
             var implementedToConcreteTypeMap = new Dictionary<Type, Type>();
 
-            _registrations.ForEach(pair => LinqExtensions.ForEach(pair.Value.SelectMany(c => c.ExposedTypes), c => implementedToConcreteTypeMap[c] = pair.Key));
+            _registrations.ForEach(pair => pair.Value.SelectMany(c => c.ExposedTypes).ForEach(c => implementedToConcreteTypeMap[c] = pair.Key));
 
             _registrations
                 .Select(pair => (pair: pair, Type: pair.Key, TypeInfo: pair.Key.GetTypeInfo(), contexts: pair.Value))
                 .If(item => !IsConcreteType(item.TypeInfo), item => throw new TypeRegistrationException(item.Type))
-                .Select(item => 
-                    (item: item, ConstructorInfo: item.TypeInfo.GetConstructors()
-                        .Where(ctr => IsConstructorQualified(ctr, allImplementedTypes))
-                        .OrderByDescending(ctor => ctor.GetParameters().Length)
-                        .FirstOrDefault()))
-                .ForEach(item => selectedConstructors[item.item.Type] = item.ConstructorInfo ??
-                    throw new CodeJectException($"Can't resolve dependencies for {item.item.Type.FullName}."));
-                
-            
-            
+                .Select(item => (Type: item.Type, ConstructorInfo: FindConstructor(item.TypeInfo, registeredInterfaces)))
+                .ForEach(item => selectedConstructors[item.Type] = item.ConstructorInfo ??
+                    throw new CodeJectException($"Can't resolve dependencies for {item.Type.FullName}."));
+
+            return new CodeJectResolver(implementedToConcreteTypeMap.ToDictionary(pair => pair.Key,
+                pair => (Func<object>)(() => GenerateObjectFactor(pair.Value, selectedConstructors, implementedToConcreteTypeMap)())));
+
             //foreach (var pair in _registrations)
             //{
             //    var typeInfo = pair.Key.GetTypeInfo();
@@ -61,9 +58,14 @@ namespace CodeJect
             //}
             //return new CodeJectResolver(_registrations.Select(pair => (pair.Key, pair.Value.AsEnumerable())));
 
-            return new CodeJectResolver(implementedToConcreteTypeMap.ToDictionary(pair => pair.Key,
-                pair => (Func<object>)(() => GenerateObjectFactor(pair.Value, selectedConstructors, implementedToConcreteTypeMap)())));
+
         }
+
+        private ConstructorInfo FindConstructor(TypeInfo type, ISet<Type> registeredInterfaces)
+            => type.GetConstructors()
+                .Where(constructor => IsConstructorQualified(constructor, registeredInterfaces))
+                .OrderByDescending(constructor => constructor.GetParameters().Length)
+                .FirstOrDefault();
 
         private Func<object> GenerateObjectFactor(Type type, Dictionary<Type, ConstructorInfo> constructorMap, Dictionary<Type, Type> typeMap)
         {
@@ -87,6 +89,7 @@ namespace CodeJect
 
             return context;
         }
+
 
         private bool IsConstructorQualified(ConstructorInfo constructor, ISet<Type> implementedTypes)
             => constructor.IsPublic &&
